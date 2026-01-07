@@ -1,0 +1,50 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-sc-auto
+spec:
+  storageClassName: microk8s-hostpath
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: data-exchange-sc-auto
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: data-exchange-sc-auto
+  template:
+    metadata:
+      labels:
+        app: data-exchange-sc-auto
+    spec:
+      containers:
+        - name: busybox
+          image: busybox
+          command: ["/bin/sh", "-c"]
+          args:
+            [
+              "while true; do echo $(date) >> /shared/output-data.txt; sleep 5; done",
+            ]
+          volumeMounts:
+            - name: pvol-sc-auto
+              mountPath: /shared
+        - name: multitool
+          image: wbitt/network-multitool
+          command: ["/bin/sh", "-c"]
+          args: ["tail -f /shared/output-data.txt"]
+          volumeMounts:
+            - name: pvol-sc-auto
+              mountPath: /shared
+      volumes:
+        - name: pvol-sc-auto
+          persistentVolumeClaim:
+            claimName: pvc-sc-auto
