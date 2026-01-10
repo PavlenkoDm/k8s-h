@@ -1,0 +1,10 @@
+services:
+  helm:
+    image: alpine/helm:latest
+    container_name: helm-dev
+    volumes:
+      - ./helm-apps:/helm-apps
+    working_dir: /helm-apps
+    command: sleep infinity
+    restart: unless-stopped
+    entrypoint: /bin/sh -c "apk add --no-cache git && sleep infinity"

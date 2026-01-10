@@ -1,0 +1,19 @@
+{{- if .Values.frontend.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-{{ .Values.frontend.name }}
+  labels:
+    app: {{ .Release.Name }}-{{ .Values.frontend.name }}
+    chart: {{ .Chart.Name }}-{{ .Chart.Version }}
+    release: {{ .Release.Name }}
+spec:
+  type: {{ .Values.frontend.service.type }}
+  selector:
+    app: {{ .Release.Name }}-{{ .Values.frontend.name }}
+  ports:
+    - name: http
+      protocol: TCP
+      port: {{ .Values.frontend.service.port }}
+      targetPort: {{ .Values.frontend.service.targetPort }}
+{{- end }}

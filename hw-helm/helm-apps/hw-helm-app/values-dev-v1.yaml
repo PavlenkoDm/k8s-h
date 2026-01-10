@@ -1,0 +1,44 @@
+# Dev-v1-env
+frontend:
+  enabled: true
+  name: frontend
+  replicaCount: 1
+  image:
+    repository: nginx
+    tag: "1.25"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 80
+  containerPort: 80
+
+backend:
+  enabled: true
+  name: backend
+  replicaCount: 1
+  image:
+    repository: wbitt/network-multitool
+    tag: "latest"
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+  containerPort: 8080
+  env:
+    - name: HTTP_PORT
+      value: "8080"
+
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  paths:
+    - path: /api
+      pathType: Prefix
+      backend: backend
+    - path: /
+      pathType: Prefix
+      backend: frontend
