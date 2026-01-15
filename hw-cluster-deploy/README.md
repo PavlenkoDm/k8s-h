@@ -25,7 +25,6 @@
 - **Container Runtime:** containerd
 - **CNI Plugin:** Calico v3.31.3
 - **Операционная система:** Ubuntu 22.04 LTS
-- **Облачный провайдер:** Yandex Cloud
 
 ## Архитектура кластера
 
